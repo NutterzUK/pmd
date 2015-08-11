@@ -1,26 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.ui.Controller">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
-
-          <Menu mnemonicParsing="false" text="File">
-              <MenuItem mnemonicParsing="false" text="New" />
-                  <MenuItem mnemonicParsing="false" text="Open Existing" />
-                  <MenuItem mnemonicParsing="false" text="Save" />
-                  <MenuItem mnemonicParsing="false" text="Save As..." />
-                  <MenuItem mnemonicParsing="false" text="Settings..." />
-                  <MenuItem mnemonicParsing="false" text="Exit" />
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-              <MenuItem mnemonicParsing="false" text="About" />
-                  <MenuItem mnemonicParsing="false" text="Online help" />
-          </Menu>
+         <menus>
+   
+             <Menu mnemonicParsing="false" text="File">
+      <items>
+                    <MenuItem mnemonicParsing="false" text="New" />
+                        <MenuItem mnemonicParsing="false" text="Open Existing" />
+                        <MenuItem mnemonicParsing="false" text="Save" />
+                        <MenuItem mnemonicParsing="false" text="Save As..." />
+                        <MenuItem mnemonicParsing="false" text="Settings..." />
+                        <MenuItem mnemonicParsing="false" text="Exit" />
+      </items>
+             </Menu>
+             <Menu mnemonicParsing="false" text="Help">
+                <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                        <MenuItem mnemonicParsing="false" text="Online help" />
+                </items>
+             </Menu>
+         </menus>
   
       </MenuBar>
    </top>
+   <center>
+      <SplitPane dividerPositions="0.28762541806020064, 0.7558528428093646" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+            <VBox prefHeight="200.0" prefWidth="100.0" fx:id="leftVBox">
+               <children>
+                  <Label prefHeight="17.0" prefWidth="999999.0" text="Rule Library" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" fx:id="leftVBox">
+               <children>
+                   <Label prefHeight="17.0" prefWidth="999999.0" text="Current Ruleset" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                   <Label prefHeight="17.0" prefWidth="999999.0" text="Configuration" VBox.vgrow="ALWAYS" />
+                   <ListView prefHeight="9999999.0" prefWidth="169.0" />
+
+               </children>
+            </VBox>
+        </items>
+      </SplitPane>
+   </center>
+   <bottom>
+      <AnchorPane prefHeight="25.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="runButton" layoutY="7.0" mnemonicParsing="false" text="Run" />
+            <Label layoutX="423.0" layoutY="8.0" prefHeight="17.0" prefWidth="163.0" text="Current File: " />
+         </children></AnchorPane>
+   </bottom>
 </BorderPane>

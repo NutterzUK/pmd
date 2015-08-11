@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <artifactId>junit</artifactId> 
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
