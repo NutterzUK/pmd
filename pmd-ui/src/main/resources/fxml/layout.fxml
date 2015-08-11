@@ -37,7 +37,7 @@
                   <Label prefHeight="17.0" prefWidth="999999.0" text="Rule Library" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox prefHeight="200.0" prefWidth="100.0" fx:id="leftVBox">
+            <VBox prefHeight="200.0" prefWidth="100.0" fx:id="midVBox">
                <children>
                    <Label prefHeight="17.0" prefWidth="999999.0" text="Current Ruleset" VBox.vgrow="ALWAYS" />
                </children>

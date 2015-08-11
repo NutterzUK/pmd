@@ -9,11 +9,15 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 import org.controlsfx.control.CheckTreeView;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
 
 import java.net.URL;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -42,12 +46,14 @@ public class Controller implements Initializable {
 
     private CheckTreeView<String> currentRulesetTreeView;
 
+    private RuleSetEditorModel model;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         runButton.setGraphic(new Glyph("FontAwesome", FontAwesome.Glyph.PLAY_CIRCLE));
+        model = new RuleSetEditorModel();
         addLibraryTree();
         addCurrentRulesetTree();
-
     }
 
     /**
@@ -80,7 +86,7 @@ public class Controller implements Initializable {
             }
         });
 
-        currentRulesetTreeView.setPrefHeight(Double.MAX_VALUE);
+        currentRulesetTreeView.setPrefHeight(99999);
         // A tiny bit of padding.
         midVBox.setPadding(new Insets(2));
         midVBox.getChildren().add(currentRulesetTreeView);
@@ -116,7 +122,7 @@ public class Controller implements Initializable {
             }
         });
 
-        libraryTreeView.setPrefHeight(Double.MAX_VALUE);
+        libraryTreeView.setPrefHeight(99999);
         // A tiny bit of padding.
         leftVBox.setPadding(new Insets(2));
         leftVBox.getChildren().add(libraryTreeView);
