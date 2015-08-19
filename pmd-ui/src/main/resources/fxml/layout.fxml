@@ -14,7 +14,7 @@
                     <MenuItem mnemonicParsing="false" text="New" />
                         <MenuItem mnemonicParsing="false" text="Open Existing" />
                         <MenuItem mnemonicParsing="false" text="Save" />
-                        <MenuItem mnemonicParsing="false" text="Save As..." />
+                        <MenuItem mnemonicParsing="false" text="Save As..." onAction="#onSaveAs"/>
                         <MenuItem mnemonicParsing="false" text="Settings..." />
                         <MenuItem mnemonicParsing="false" text="Exit" />
       </items>
@@ -30,14 +30,19 @@
       </MenuBar>
    </top>
    <center>
-      <SplitPane dividerPositions="0.28762541806020064, 0.7558528428093646" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.2709030100334448, 0.3963210702341137, 0.7692307692307693" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
-            <VBox prefHeight="200.0" prefWidth="100.0" fx:id="leftVBox">
+            <VBox fx:id="leftVBox" prefHeight="200.0" prefWidth="100.0">
                <children>
                   <Label prefHeight="17.0" prefWidth="999999.0" text="Rule Library" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox prefHeight="200.0" prefWidth="100.0" fx:id="midVBox">
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Button fx:id="btnAdd" mnemonicParsing="false" text="--&gt;" onAction="#onAddButtonClick" />
+                  <Button fx:id="btnRemove" mnemonicParsing="false" text="&lt;--" onAction="#onRemoveButtonClick"/>
+               </children></VBox>
+            <VBox fx:id="midVBox" prefHeight="200.0" prefWidth="100.0">
                <children>
                    <Label prefHeight="17.0" prefWidth="999999.0" text="Current Ruleset" VBox.vgrow="ALWAYS" />
                </children>
