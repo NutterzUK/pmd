@@ -18,7 +18,7 @@ public class Main extends Application {
             Controller controller = (Controller)loader.getController();
             controller.setStageAndSetupListeners(primaryStage);
             primaryStage.setTitle("PMD Ruleset Editor");
-            primaryStage.setScene(new Scene(root, 800, 600));
+            primaryStage.setScene(new Scene(root, 1024, 768));
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();

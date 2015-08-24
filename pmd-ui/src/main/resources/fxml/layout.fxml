@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.ui.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="1088.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.ui.Controller">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
          <menus>
@@ -14,7 +14,7 @@
                     <MenuItem mnemonicParsing="false" text="New" />
                         <MenuItem mnemonicParsing="false" text="Open Existing" />
                         <MenuItem mnemonicParsing="false" text="Save" />
-                        <MenuItem mnemonicParsing="false" text="Save As..." onAction="#onSaveAs"/>
+                        <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="Save As..." />
                         <MenuItem mnemonicParsing="false" text="Settings..." />
                         <MenuItem mnemonicParsing="false" text="Exit" />
       </items>
@@ -30,27 +30,27 @@
       </MenuBar>
    </top>
    <center>
-      <SplitPane dividerPositions="0.2709030100334448, 0.3963210702341137, 0.7692307692307693" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.19198312236286919, 0.24261603375527427, 0.5179324894514767" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
-            <VBox fx:id="leftVBox" prefHeight="200.0" prefWidth="100.0">
+            <VBox fx:id="leftVBox" prefHeight="481.0" prefWidth="229.0">
                <children>
                   <Label prefHeight="17.0" prefWidth="999999.0" text="Rule Library" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox prefHeight="200.0" prefWidth="100.0">
+            <VBox prefHeight="341.0" prefWidth="23.0">
                <children>
-                  <Button fx:id="btnAdd" mnemonicParsing="false" text="--&gt;" onAction="#onAddButtonClick" />
-                  <Button fx:id="btnRemove" mnemonicParsing="false" text="&lt;--" onAction="#onRemoveButtonClick"/>
+                  <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#onAddButtonClick" text="--&gt;" />
+                  <Button fx:id="btnRemove" mnemonicParsing="false" onAction="#onRemoveButtonClick" text="&lt;--" />
                </children></VBox>
-            <VBox fx:id="midVBox" prefHeight="200.0" prefWidth="100.0">
+            <VBox fx:id="midVBox" prefHeight="481.0" prefWidth="284.0">
                <children>
-                   <Label prefHeight="17.0" prefWidth="999999.0" text="Current Ruleset" VBox.vgrow="ALWAYS" />
+                   <Label prefHeight="17.0" prefWidth="194.0" text="Current Ruleset" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <VBox prefHeight="200.0" prefWidth="100.0">
+            <VBox fx:id="rightVBox" prefHeight="481.0" prefWidth="332.0">
                <children>
                    <Label prefHeight="17.0" prefWidth="999999.0" text="Configuration" VBox.vgrow="ALWAYS" />
-                   <ListView prefHeight="9999999.0" prefWidth="169.0" />
+
 
                </children>
             </VBox>

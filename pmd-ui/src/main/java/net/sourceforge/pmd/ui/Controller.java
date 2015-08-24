@@ -1,10 +1,17 @@
 package net.sourceforge.pmd.ui;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,17 +20,54 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.sourceforge.pmd.*;
 import org.controlsfx.control.CheckTreeView;
+import org.controlsfx.control.PropertySheet;
+import org.controlsfx.control.SegmentedButton;
+import org.controlsfx.control.action.Action;
+import org.controlsfx.control.action.ActionUtils;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.Glyph;
+import org.controlsfx.property.BeanProperty;
+import org.controlsfx.property.BeanPropertyUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.ResourceBundle;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.*;
+
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import org.controlsfx.control.PropertySheet;
+import org.controlsfx.control.PropertySheet.Item;
+import org.controlsfx.control.PropertySheet.Mode;
+import org.controlsfx.control.SegmentedButton;
+import org.controlsfx.control.action.ActionUtils;
+import org.controlsfx.property.BeanPropertyUtils;
 
 public class Controller implements Initializable {
 
@@ -45,6 +89,9 @@ public class Controller implements Initializable {
     @FXML
     VBox midVBox;
 
+    @FXML
+    VBox rightVBox;
+
     /**
      * Model stores everything to do with ruleset currently being edited.
      */
@@ -65,10 +112,11 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        runButton.setGraphic(new Glyph("FontAwesome", FontAwesome.Glyph.PLAY_CIRCLE));
+      //  runButton.setGraphic(new Glyph("FontAwesome", FontAwesome.Glyph.PLAY_CIRCLE));
         model = new RuleSetEditorModel();
         addLibraryTree();
         addCurrentRulesetTree();
+        rightVBox.getChildren().add(getPanel());
     }
 
     /**
@@ -91,7 +139,10 @@ public class Controller implements Initializable {
         currentRulesetTreeView.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<TreeItem<TreeNode>>() {
             @Override
             public void onChanged(ListChangeListener.Change<? extends TreeItem<TreeNode>> c) {
-                //updateText(selectedItemsLabel, c.getList());
+                Object data = currentRulesetTreeView.getSelectionModel().getSelectedItem().getValue().getData();
+                if(data instanceof Rule) {
+                    updateConfigurationArea((Rule) currentRulesetTreeView.getSelectionModel().getSelectedItem().getValue().getData());
+                }
             }
         });
 
@@ -100,9 +151,15 @@ public class Controller implements Initializable {
         midVBox.getChildren().add(currentRulesetTreeView);
     }
 
-    private void updateLibraryTreeView(){
-        //leftVBox.getChildren().remove(libraryTreeView);
-        //addLibraryTree();
+    private void updateConfigurationArea(Rule rule){
+        List<PropertyDescriptor<?>> pds = rule.getPropertyDescriptors();
+
+        for(PropertyDescriptor pd : pds){
+
+
+
+        }
+
     }
 
     private void updateCurrentRulesetTree(){
@@ -132,11 +189,12 @@ public class Controller implements Initializable {
         }
 
         libraryTreeView = new CheckTreeView<TreeNode>(root);
-        libraryTreeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        libraryTreeView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
         libraryTreeView.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<TreeItem<TreeNode>>() {
             @Override
             public void onChanged(ListChangeListener.Change<? extends TreeItem<TreeNode>> c) {
-                //updateText(selectedItemsLabel, c.getList());
+                System.out.println(libraryTreeView.getSelectionModel().getSelectedItem().getValue().toString());
             }
         });
 
@@ -169,7 +227,6 @@ public class Controller implements Initializable {
         }
 
         libraryTreeView.getRoot().getChildren().removeAll(libraryTreeView.getCheckModel().getCheckedItems());
-        updateLibraryTreeView();
         updateCurrentRulesetTree();
     }
 
@@ -201,4 +258,115 @@ public class Controller implements Initializable {
     protected void onRemoveButtonClick() {
         System.out.println("The button was clicked!");
     }
+
+
+    private PropertySheet propertySheet = new PropertySheet();
+
+
+    private static Map<String,Object> customDataMap = new LinkedHashMap<>();
+
+    static {
+        customDataMap.put("1. Name#First Name", "Jonathan");
+        customDataMap.put("1. Name#Last Name", "Giles");
+        customDataMap.put("1. Name#Birthday",  LocalDate.of(1985, Month.JANUARY, 12));
+        customDataMap.put("2. Billing Address#Address 1", "");
+        customDataMap.put("2. Billing Address#Address 2", "");
+        customDataMap.put("2. Billing Address#City", "");
+        customDataMap.put("2. Billing Address#State", "");
+        customDataMap.put("2. Billing Address#Zip", "");
+        customDataMap.put("3. Phone#Home", "123-123-1234");
+        customDataMap.put("3. Phone#Mobile", "234-234-2345");
+        customDataMap.put("3. Phone#Work", "");
+    }
+
+    class CustomPropertyItem implements Item {
+
+        private String key;
+        private String category, name;
+
+        public CustomPropertyItem(String key) {
+            this.key = key;
+            String[] skey = key.split("#");
+            category = skey[0];
+            name  = skey[1];
+        }
+
+        @Override public Class<?> getType() {
+            return customDataMap.get(key).getClass();
+        }
+
+        @Override public String getCategory() {
+            return category;
+        }
+
+        @Override public String getName() {
+            return name;
+        }
+
+        @Override public String getDescription() {
+            return null;
+        }
+
+        @Override public Object getValue() {
+            return customDataMap.get(key);
+        }
+
+        @Override public void setValue(Object value) {
+            customDataMap.put(key, value);
+        }
+
+    }
+
+    class ActionShowInPropertySheet extends Action {
+
+
+        public ActionShowInPropertySheet(  ) {
+            super("title");
+        }
+
+        private ObservableList<Item> getCustomModelProperties() {
+            ObservableList<Item> list = FXCollections.observableArrayList();
+            for (String key : customDataMap.keySet() ) {
+                list.add(new CustomPropertyItem(key));
+            }
+            return list;
+        }
+
+        public void execute(ActionEvent ae) {
+
+            Service<?> service = new Service<ObservableList<Item>>() {
+
+                @Override protected Task<ObservableList<Item>> createTask() {
+                    return new Task<ObservableList<Item>>() {
+                        @Override protected ObservableList<Item> call() throws Exception {
+                            return getCustomModelProperties();
+                        }
+                    };
+                }
+
+            };
+            service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+                @SuppressWarnings("unchecked") @Override public void handle(WorkerStateEvent e) {
+                    propertySheet.getItems().setAll((ObservableList<Item>) e.getSource().getValue());
+                }
+            });
+            service.start();
+        }
+    }
+
+    public Node getPanel() {
+
+        //VBox infoPane = new VBox(10);
+        //infoPane.setPadding( new Insets(20,20,20,20));
+
+        Button button = new Button("Title");
+        ActionShowInPropertySheet ac = new ActionShowInPropertySheet();
+        ac.execute(null);
+        propertySheet.setModeSwitcherVisible(false);
+
+        return propertySheet;
+    }
+
+
 }
