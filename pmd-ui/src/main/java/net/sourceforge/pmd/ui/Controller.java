@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,60 +13,24 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.sourceforge.pmd.*;
 import org.controlsfx.control.CheckTreeView;
 import org.controlsfx.control.PropertySheet;
-import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.action.Action;
-import org.controlsfx.control.action.ActionUtils;
-import org.controlsfx.glyphfont.FontAwesome;
-import org.controlsfx.glyphfont.Glyph;
-import org.controlsfx.property.BeanProperty;
-import org.controlsfx.property.BeanPropertyUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.*;
 
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-
-import org.controlsfx.control.PropertySheet;
 import org.controlsfx.control.PropertySheet.Item;
-import org.controlsfx.control.PropertySheet.Mode;
-import org.controlsfx.control.SegmentedButton;
-import org.controlsfx.control.action.ActionUtils;
-import org.controlsfx.property.BeanPropertyUtils;
+
 
 public class Controller implements Initializable {
 
@@ -152,13 +115,46 @@ public class Controller implements Initializable {
     }
 
     private void updateConfigurationArea(Rule rule){
+        customDataMap.clear();
         List<PropertyDescriptor<?>> pds = rule.getPropertyDescriptors();
 
         for(PropertyDescriptor pd : pds){
 
+           System.out.println(pd.toString());
+           Object value = "foo";
 
+           switch(pd.type().getName()){
+                case "java.lang.String":
+                    value = pd.defaultValue() == null ? "" : pd.defaultValue();
+                    break;
+                case "[Ljava.lang.String;":
+                    break;
+                case "java.lang.Boolean":
+                    value = pd.defaultValue() == null ? false : pd.defaultValue();
+                    break;
+                case "[Ljava.lang.Boolean;":
+                    break;
+                case "java.lang.Double":
+                    value = pd.defaultValue() == null ? 0.0 : pd.defaultValue();
+                    break;
+                case "[Ljava.lang.Double;":
+                    break;
+                case "java.lang.Integer":
+                    value = pd.defaultValue() == null ? 0 : pd.defaultValue();
+                    break;
+                case "[Ljava.lang.Integer;":
+                    break;
+                case "j[Ljava.lang.Object;":
+                case "Object":
+                    break;
+
+                default: System.out.println("Unknown property descriptor type: [" + pd.type().toString() +"] for " + pd.toString());
+            }
+            customDataMap.put("4. " + pd.name() + "#" + pd.name(), value);
 
         }
+        ActionShowInPropertySheet ac = new ActionShowInPropertySheet();
+        ac.execute();
 
     }
 
@@ -259,25 +255,10 @@ public class Controller implements Initializable {
         System.out.println("The button was clicked!");
     }
 
-
     private PropertySheet propertySheet = new PropertySheet();
 
 
     private static Map<String,Object> customDataMap = new LinkedHashMap<>();
-
-    static {
-        customDataMap.put("1. Name#First Name", "Jonathan");
-        customDataMap.put("1. Name#Last Name", "Giles");
-        customDataMap.put("1. Name#Birthday",  LocalDate.of(1985, Month.JANUARY, 12));
-        customDataMap.put("2. Billing Address#Address 1", "");
-        customDataMap.put("2. Billing Address#Address 2", "");
-        customDataMap.put("2. Billing Address#City", "");
-        customDataMap.put("2. Billing Address#State", "");
-        customDataMap.put("2. Billing Address#Zip", "");
-        customDataMap.put("3. Phone#Home", "123-123-1234");
-        customDataMap.put("3. Phone#Mobile", "234-234-2345");
-        customDataMap.put("3. Phone#Work", "");
-    }
 
     class CustomPropertyItem implements Item {
 
@@ -332,7 +313,7 @@ public class Controller implements Initializable {
             return list;
         }
 
-        public void execute(ActionEvent ae) {
+        public void execute() {
 
             Service<?> service = new Service<ObservableList<Item>>() {
 
@@ -362,7 +343,7 @@ public class Controller implements Initializable {
 
         Button button = new Button("Title");
         ActionShowInPropertySheet ac = new ActionShowInPropertySheet();
-        ac.execute(null);
+        ac.execute();
         propertySheet.setModeSwitcherVisible(false);
 
         return propertySheet;
