@@ -27,8 +27,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+
 import org.controlsfx.control.PropertySheet.Item;
 
 
@@ -69,13 +68,13 @@ public class Controller implements Initializable {
     private RuleSetEditorModel model;
     private Stage stage;
 
-    public void setStageAndSetupListeners(Stage stage){
+    public void setStageAndSetupListeners(Stage stage) {
         this.stage = stage;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-      //  runButton.setGraphic(new Glyph("FontAwesome", FontAwesome.Glyph.PLAY_CIRCLE));
+        //  runButton.setGraphic(new Glyph("FontAwesome", FontAwesome.Glyph.PLAY_CIRCLE));
         model = new RuleSetEditorModel();
         addLibraryTree();
         addCurrentRulesetTree();
@@ -85,7 +84,7 @@ public class Controller implements Initializable {
     /**
      * Create and add the current ruleset tree.
      */
-    void addCurrentRulesetTree(){
+    void addCurrentRulesetTree() {
         CheckBoxTreeItem<TreeNode> root = new CheckBoxTreeItem<TreeNode>(new TreeNode("Current Ruleset"));
         root.setExpanded(true);
         currentRulesetTreeView = new CheckTreeView<TreeNode>(root);
@@ -93,7 +92,7 @@ public class Controller implements Initializable {
         Collection<Rule> rules = model.getCurrentRuleset().getRules();
         CheckBoxTreeItem<TreeNode> ruleNode;
 
-        for(Rule rule : rules){
+        for (Rule rule : rules) {
             ruleNode = new CheckBoxTreeItem<TreeNode>(new TreeNode(rule));
             root.getChildren().add(ruleNode);
         }
@@ -103,7 +102,7 @@ public class Controller implements Initializable {
             @Override
             public void onChanged(ListChangeListener.Change<? extends TreeItem<TreeNode>> c) {
                 Object data = currentRulesetTreeView.getSelectionModel().getSelectedItem().getValue().getData();
-                if(data instanceof Rule) {
+                if (data instanceof Rule) {
                     updateConfigurationArea((Rule) currentRulesetTreeView.getSelectionModel().getSelectedItem().getValue().getData());
                 }
             }
@@ -114,51 +113,14 @@ public class Controller implements Initializable {
         midVBox.getChildren().add(currentRulesetTreeView);
     }
 
-    private void updateConfigurationArea(Rule rule){
+    private void updateConfigurationArea(Rule rule) {
         customDataMap.clear();
-        List<PropertyDescriptor<?>> pds = rule.getPropertyDescriptors();
-
-        for(PropertyDescriptor pd : pds){
-
-           System.out.println(pd.toString());
-           Object value = "foo";
-
-           switch(pd.type().getName()){
-                case "java.lang.String":
-                    value = pd.defaultValue() == null ? "" : pd.defaultValue();
-                    break;
-                case "[Ljava.lang.String;":
-                    break;
-                case "java.lang.Boolean":
-                    value = pd.defaultValue() == null ? false : pd.defaultValue();
-                    break;
-                case "[Ljava.lang.Boolean;":
-                    break;
-                case "java.lang.Double":
-                    value = pd.defaultValue() == null ? 0.0 : pd.defaultValue();
-                    break;
-                case "[Ljava.lang.Double;":
-                    break;
-                case "java.lang.Integer":
-                    value = pd.defaultValue() == null ? 0 : pd.defaultValue();
-                    break;
-                case "[Ljava.lang.Integer;":
-                    break;
-                case "j[Ljava.lang.Object;":
-                case "Object":
-                    break;
-
-                default: System.out.println("Unknown property descriptor type: [" + pd.type().toString() +"] for " + pd.toString());
-            }
-            customDataMap.put("4. " + pd.name() + "#" + pd.name(), value);
-
-        }
-        ActionShowInPropertySheet ac = new ActionShowInPropertySheet();
+        ActionShowInPropertySheet ac = new ActionShowInPropertySheet(rule);
         ac.execute();
 
     }
 
-    private void updateCurrentRulesetTree(){
+    private void updateCurrentRulesetTree() {
         midVBox.getChildren().remove(currentRulesetTreeView);
         addCurrentRulesetTree();
     }
@@ -166,7 +128,7 @@ public class Controller implements Initializable {
     /**
      * Create and add the library tree on the left.
      */
-    void addLibraryTree(){
+    void addLibraryTree() {
         CheckBoxTreeItem<TreeNode> child;
 
         // Tree labels are the ruleset name and the tree requires a root of type RuleSet
@@ -175,11 +137,11 @@ public class Controller implements Initializable {
         CheckBoxTreeItem<TreeNode> root = new CheckBoxTreeItem<TreeNode>(new TreeNode("Root"));
         try {
             Iterator<RuleSet> rulesetIterator = model.getRuleLibrary();
-                while (rulesetIterator.hasNext()) {
-                    RuleSet rs = rulesetIterator.next();
-                    child = createNodeForTree(rs);
-                    root.getChildren().add(child);
-                }
+            while (rulesetIterator.hasNext()) {
+                RuleSet rs = rulesetIterator.next();
+                child = createNodeForTree(rs);
+                root.getChildren().add(child);
+            }
         } catch (RuleSetNotFoundException e) {
             e.printStackTrace();
         }
@@ -199,12 +161,12 @@ public class Controller implements Initializable {
         leftVBox.getChildren().add(libraryTreeView);
     }
 
-    private CheckBoxTreeItem<TreeNode> createNodeForTree(RuleSet ruleset){
+    private CheckBoxTreeItem<TreeNode> createNodeForTree(RuleSet ruleset) {
         // What happens with nested rulesets?
         CheckBoxTreeItem<TreeNode> root = new CheckBoxTreeItem<TreeNode>(new TreeNode(ruleset));
         CheckBoxTreeItem<TreeNode> child;
         Collection<Rule> rules = ruleset.getRules();
-        for(Rule rule : rules){
+        for (Rule rule : rules) {
             child = new CheckBoxTreeItem<TreeNode>(new TreeNode(rule));
             root.getChildren().add(child);
         }
@@ -214,11 +176,11 @@ public class Controller implements Initializable {
     @FXML
     protected void onAddButtonClick() {
         ObservableList<TreeItem<TreeNode>> checkedItems = libraryTreeView.getCheckModel().getCheckedItems();
-        for(TreeItem<TreeNode> treeItem : checkedItems){
+        for (TreeItem<TreeNode> treeItem : checkedItems) {
             TreeNode node = treeItem.getValue();
             // We do not need to add rulesets as we are adding individual rules at this point.
-            if(node.isRule()){
-                model.getCurrentRuleset().addRule((Rule)node.getData());
+            if (node.isRule()) {
+                model.getCurrentRuleset().addRule((Rule) node.getData());
             }
         }
 
@@ -238,7 +200,7 @@ public class Controller implements Initializable {
         File file = fileChooser.showSaveDialog(stage);
 
         try {
-            if(file != null){
+            if (file != null) {
                 RuleSetWriter rsw;
                 rsw = new RuleSetWriter(new FileOutputStream(file));
                 rsw.write(model.getCurrentRuleset());
@@ -250,6 +212,16 @@ public class Controller implements Initializable {
     }
 
 
+    public Node getPanel() {
+
+        Button button = new Button("Title");
+        //ActionShowInPropertySheet ac = new ActionShowInPropertySheet();
+        //ac.execute();
+        propertySheet.setModeSwitcherVisible(false);
+
+        return propertySheet;
+    }
+
     @FXML
     protected void onRemoveButtonClick() {
         System.out.println("The button was clicked!");
@@ -258,58 +230,74 @@ public class Controller implements Initializable {
     private PropertySheet propertySheet = new PropertySheet();
 
 
-    private static Map<String,Object> customDataMap = new LinkedHashMap<>();
+    private static List<PropertyDescriptor> customDataMap = new ArrayList<>();
 
     class CustomPropertyItem implements Item {
 
-        private String key;
-        private String category, name;
+        private PropertyDescriptor descriptor;
+        private Rule rule;
 
-        public CustomPropertyItem(String key) {
-            this.key = key;
-            String[] skey = key.split("#");
-            category = skey[0];
-            name  = skey[1];
+        public CustomPropertyItem(PropertyDescriptor descriptor, Rule rule) {
+            this.descriptor = descriptor;
+            this.rule = rule;
         }
 
-        @Override public Class<?> getType() {
-            return customDataMap.get(key).getClass();
+        @Override
+        public Class<?> getType() {
+            return descriptor.type();
         }
 
-        @Override public String getCategory() {
-            return category;
+        @Override
+        public String getCategory() {
+            return "";
         }
 
-        @Override public String getName() {
-            return name;
+        @Override
+        public String getName() {
+            return descriptor.name();
         }
 
-        @Override public String getDescription() {
-            return null;
+        @Override
+        public String getDescription() {
+            return descriptor.description();
         }
 
-        @Override public Object getValue() {
-            return customDataMap.get(key);
+        @Override
+        public Object getValue() {
+            // Possible bug in controlsfx, if null returned for int or double, throws NPE.
+            if ((getType().equals(Integer.class) || getType().equals(Double.class)) && rule.getProperty(descriptor) == null) {
+                return 0;
+            }
+            return rule.getProperty(descriptor);
         }
 
-        @Override public void setValue(Object value) {
-            customDataMap.put(key, value);
+        @Override
+        public void setValue(Object value) {
+            if (value != null) {
+                rule.setProperty(descriptor, value);
+            }
         }
 
     }
 
     class ActionShowInPropertySheet extends Action {
 
+        Rule rule;
 
-        public ActionShowInPropertySheet(  ) {
+        public ActionShowInPropertySheet(Rule rule) {
             super("title");
+            this.rule = rule;
         }
 
         private ObservableList<Item> getCustomModelProperties() {
             ObservableList<Item> list = FXCollections.observableArrayList();
-            for (String key : customDataMap.keySet() ) {
-                list.add(new CustomPropertyItem(key));
+
+            List<PropertyDescriptor<?>> pds = rule.getPropertyDescriptors();
+
+            for (PropertyDescriptor pd : pds) {
+                list.add(new CustomPropertyItem(pd, rule));
             }
+
             return list;
         }
 
@@ -317,9 +305,11 @@ public class Controller implements Initializable {
 
             Service<?> service = new Service<ObservableList<Item>>() {
 
-                @Override protected Task<ObservableList<Item>> createTask() {
+                @Override
+                protected Task<ObservableList<Item>> createTask() {
                     return new Task<ObservableList<Item>>() {
-                        @Override protected ObservableList<Item> call() throws Exception {
+                        @Override
+                        protected ObservableList<Item> call() throws Exception {
                             return getCustomModelProperties();
                         }
                     };
@@ -328,26 +318,13 @@ public class Controller implements Initializable {
             };
             service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
-                @SuppressWarnings("unchecked") @Override public void handle(WorkerStateEvent e) {
+                @SuppressWarnings("unchecked")
+                @Override
+                public void handle(WorkerStateEvent e) {
                     propertySheet.getItems().setAll((ObservableList<Item>) e.getSource().getValue());
                 }
             });
             service.start();
         }
     }
-
-    public Node getPanel() {
-
-        //VBox infoPane = new VBox(10);
-        //infoPane.setPadding( new Insets(20,20,20,20));
-
-        Button button = new Button("Title");
-        ActionShowInPropertySheet ac = new ActionShowInPropertySheet();
-        ac.execute();
-        propertySheet.setModeSwitcherVisible(false);
-
-        return propertySheet;
-    }
-
-
 }
